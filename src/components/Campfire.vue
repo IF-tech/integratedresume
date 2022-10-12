@@ -1,40 +1,68 @@
 <template>
-    <!DOCTYPE html>
-    <html lang="en">
-      <body>
-        <canvas class="webgl"></canvas>
-      </body>
-    </html>
-  </template>
-    
-    <script>
-  import * as THREE from "three";
+  <div>
+    <v-container
+      style="
+        position: fixed;
+        z-index: 3;
+
+        top: 0;
+        left: 0;
+        width: 100vw;
+        margin-top: 0;
+        padding: 10px;
+      "
+      id="scenesetter"
+      ><v-row>
+        <v-col>
+          <v-color-picker
+            v-model="backgroundColor"
+            mode="hexa"
+            dot-size="25"
+            swatches-max-height="200"
+            :value="this.backgroundColor"
+          ></v-color-picker
+        ></v-col> </v-row
+    ></v-container>
+
+    <canvas class="webgl"></canvas>
+  </div>
+</template>
+
+
+<script>
+</script>
   
-  export default {
-    name: "IntegratedResumeVueAmplifyCampfire",
-  
-    data() {
-      return {};
-    },
-  
-    mounted() {
-      this.init();
-    },
-  
-    methods: {
-      init: function () {
-          let backgroundColor = "#a2a4eb";
-          
-        // Canvas
-        const canvas = document.querySelector("canvas.webgl");
-  
-        // Scene
-        const scene = new THREE.Scene();
-        scene.background = new THREE.Color(backgroundColor);
-        scene.fog = new THREE.Fog(backgroundColor, 60, 100);
-        // Lights
-  
-        let hemiLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 0.4);
+  <script>
+import * as THREE from "three";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+export default {
+  name: "IntegratedResumeVueAmplifyCampfire",
+
+  data() {
+    return {
+      backgroundColor: "#a2a4eb",
+    };
+  },
+
+  mounted() {
+   
+    this.init();
+  },
+
+  methods: {
+    init: function () {
+      let spike1, spike2, spike3;
+      // Canvas
+      const canvas = document.querySelector("canvas.webgl");
+
+      // Scene
+      const scene = new THREE.Scene();
+      scene.background = new THREE.Color(this.backgroundColor);
+      scene.fog = new THREE.Fog(this.backgroundColor, 60, 100);
+
+      // Lights
+
+      let hemiLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 0.4);
       hemiLight.position.set(100, 100, 100);
       // Add hemisphere light to scene
 
@@ -74,85 +102,229 @@
       scene.add(dirLight);
       // scene.add(ambientLight);
       scene.add(pointLight);
-  
-        /**
-         * Sizes
-         */
-        const sizes = {
-          width: window.innerWidth,
-          height: window.innerHeight,
-        };
-  
-        window.addEventListener("resize", () => {
-          // Update sizes
-          sizes.width = window.innerWidth;
-          sizes.height = window.innerHeight;
-  
-          // Update camera
-          camera.aspect = sizes.width / sizes.height;
-          camera.updateProjectionMatrix();
-  
-          // Update renderer
-          renderer.setSize(sizes.width, sizes.height);
-          renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-        });
-  
-        /**
-         * Camera
-         */
-        // Base camera
-        const camera = new THREE.PerspectiveCamera(
-          50,
-          window.innerWidth / window.innerHeight,
-          0.1,
-          1000
-        );
-        camera.position.z = 55;
-        camera.position.x = 0;
-        camera.position.y = 15;
-        camera.rotation.x = -0.3;
-        scene.add(camera);
-  
-     
+
+      /**
+       * Sizes
+       */
+      const sizes = {
+        width: window.innerWidth,
+        height: window.innerHeight,
+      };
+
+      window.addEventListener("resize", () => {
+        // Update sizes
+        sizes.width = window.innerWidth;
+        sizes.height = window.innerHeight;
+
+        // Update camera
+        camera.aspect = sizes.width / sizes.height;
+        camera.updateProjectionMatrix();
+
+        // Update renderer
+        renderer.setSize(sizes.width, sizes.height);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      });
+
+      /**
+       * Camera
+       */
+      // Base camera
+      const camera = new THREE.PerspectiveCamera(
+        50,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        1000
+      );
+      camera.position.z = 55;
+      camera.position.x = 0;
+      camera.position.y = 15;
+      camera.rotation.x = -0.3;
+      scene.add(camera);
+
       // Add Floor Geometry
       let floorGeometry = new THREE.PlaneGeometry(500, 500, 1, 1);
       let floorMaterial = new THREE.MeshPhongMaterial({
-        color: backgroundColor,
+        color: this.backgroundColor,
         shininess: 10,
       });
-  
+
       let floor = new THREE.Mesh(floorGeometry, floorMaterial);
       floor.rotation.x = -0.5 * Math.PI;
       floor.receiveShadow = true;
       floor.position.y = -11;
       scene.add(floor);
-  
-        const renderer = new THREE.WebGLRenderer({
-          canvas: canvas,
+
+      const renderer = new THREE.WebGLRenderer({
+        canvas: canvas,
+      });
+      renderer.setSize(sizes.width, sizes.height);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.setClearColor(new THREE.Color("#32a852"), 1);
+
+      //Load Objects
+      const loader = new GLTFLoader();
+      const CAMPFIRE_PATH =
+        "https://iftechpublicassets.s3.us-west-2.amazonaws.com/campfire.glb";
+      loader.load(
+        CAMPFIRE_PATH,
+        function (gltf) {
+          const model = gltf.scene;
+          model.scale.set(3, 3, 3);
+          model.position.y = -7;
+          model.position.x = -4;
+          model.position.z = 20;
+          model.rotation.y = 0.3;
+          model.castShadow = true;
+          scene.add(model);
+        },
+        undefined, // We don't need this function
+        function (error) {
+          console.error(error);
+        }
+      );
+
+      const FIRESPIKE_PATH =
+        "https://iftechpublicassets.s3.us-west-2.amazonaws.com/firespike.glb";
+      loader.load(
+        FIRESPIKE_PATH,
+        function (gltf) {
+          const model = gltf.scene;
+         
+          var newMaterial = new THREE.MeshStandardMaterial({
+            transparent: true,
+            color: 0xfcba03,
+            opacity: 0.8,
+          });
+          model.scale.set(1.2, 1, 1.2);
+          model.position.y = -3;
+          model.name = "spike1";
+          model.traverse((o) => {
+            if (o.isMesh) o.material = newMaterial;
+          });
+          model.position.x = -3.65;
+          model.position.z = 21;
+          model.castShadow = true;
+
+          spike1=model;
+          scene.add(model);
+        },
+        undefined, // We don't need this function
+        function (error) {
+          console.error(error);
+        }
+      );
+
+      loader.load(
+      FIRESPIKE_PATH,
+      function (gltf) {
+        const model = gltf.scene;
+        var newMaterial = new THREE.MeshStandardMaterial({
+          transparent: true,
+          color: 0xfcba03,
+          opacity: 0.8,
         });
-        renderer.setSize(sizes.width, sizes.height);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-        renderer.setClearColor(new THREE.Color("#32a852"), 1);
-  
-        /**
-         * Animate
-         */
-  
-        const clock = new THREE.Clock();
-  
-        const tick = () => {
-          // Render
-          renderer.render(scene, camera);
-  
-          // Call tick again on the next frame
-          window.requestAnimationFrame(tick);
-        };
-  
-        tick();
+
+        model.scale.set(0.8, 0.8, 0.8);
+        model.position.y = -3.6;
+        model.position.x = -5.3;
+        model.position.z = 20.5;
+        model.name = "spike3";
+        model.castShadow = true;
+        model.traverse((o) => {
+          if (o.isMesh) o.material = newMaterial;
+        });
+
+        spike3 = model;
+
+        scene.add(model);
       },
+      undefined, // We don't need this function
+      function (error) {
+        console.error(error);
+      }
+    );
+    loader.load(
+      FIRESPIKE_PATH,
+      function (gltf) {
+        const model = gltf.scene;
+        var newMaterial = new THREE.MeshStandardMaterial({
+          transparent: true,
+          color: 0xfcba03,
+          opacity: 0.8,
+        });
+
+        model.scale.set(0.8, 0.8, 0.8);
+        model.position.y = -3.6;
+        model.position.x = -2;
+        model.position.z = 20.5;
+        model.name = "spike2";
+        model.castShadow = true;
+        model.traverse((o) => {
+          if (o.isMesh) o.material = newMaterial;
+        });
+
+        spike2 = model;
+
+        scene.add(model);
+      },
+      undefined, // We don't need this function
+      function (error) {
+        console.error(error);
+      }
+    );
+
+      /**
+       * Animate
+       */
+
+      const clock = new THREE.Clock();
+
+      const tick = () => {
+        scene.background = new THREE.Color(this.backgroundColor);
+        scene.fog = new THREE.Fog(this.backgroundColor, 60, 100);
+        scene.children[4].material.color = new THREE.Color(
+          this.backgroundColor
+        );
+
+        let newintensity = getRandomArbitrary(0.5, 1.2);
+        pointLight.intensity = (pointLight.intensity + newintensity) / 2;
+        renderer.render(scene, camera);
+
+       
+      if(spike1){
+        let newscale = getRandomArbitrary(1.0, 1.3);
+        spike1.scale.y = (spike1.scale.y + newscale) / 2;
+        renderer.render(scene, camera);
+      }
+
+      if(spike2){
+        let newscale = getRandomArbitrary(1.0, 1.3);
+        spike2.scale.y = (spike2.scale.y + newscale) / 2;
+        renderer.render(scene, camera);
+      }
+
+      if(spike3){
+        let newscale = getRandomArbitrary(1.0, 1.3);
+        spike3.scale.y = (spike3.scale.y + newscale) / 2;
+        renderer.render(scene, camera);
+      }
+
+
+
+        function getRandomArbitrary(min, max) {
+          return Math.random() * (max - min) + min;
+        }
+
+
+
+        // Render
+        renderer.render(scene, camera);
+        // Call tick again on the next frame
+        requestAnimationFrame(tick);
+      };
+
+      tick();
     },
-  };
-  </script>
-    
-    <style lang="scss" scoped>
-  </style>
+  },
+};
+</script>
