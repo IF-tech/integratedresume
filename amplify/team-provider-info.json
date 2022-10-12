@@ -1,23 +1,23 @@
 {
-    "dev": {
-        "awscloudformation": {
-            "AuthRoleName": "amplify-integratedresume-dev-163734-authRole",
-            "UnauthRoleArn": "arn:aws:iam::105526813938:role/amplify-integratedresume-dev-163734-unauthRole",
-            "AuthRoleArn": "arn:aws:iam::105526813938:role/amplify-integratedresume-dev-163734-authRole",
-            "Region": "us-west-2",
-            "DeploymentBucketName": "amplify-integratedresume-dev-163734-deployment",
-            "UnauthRoleName": "amplify-integratedresume-dev-163734-unauthRole",
-            "StackName": "amplify-integratedresume-dev-163734",
-            "StackId": "arn:aws:cloudformation:us-west-2:105526813938:stack/amplify-integratedresume-dev-163734/854bf080-48f4-11ed-8d2e-068afa237edb",
-            "AmplifyAppId": "d3775gyp4nlwqw"
-        },
-        "categories": {
-            "hosting": {
-                "amplifyhosting": {
-                    "appId": "d3775gyp4nlwqw",
-                    "type": "cicd"
-                }
-            }
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-integratedresume-dev-163734-authRole",
+      "UnauthRoleArn": "arn:aws:iam::105526813938:role/amplify-integratedresume-dev-163734-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::105526813938:role/amplify-integratedresume-dev-163734-authRole",
+      "Region": "us-west-2",
+      "DeploymentBucketName": "amplify-integratedresume-dev-163734-deployment",
+      "UnauthRoleName": "amplify-integratedresume-dev-163734-unauthRole",
+      "StackName": "amplify-integratedresume-dev-163734",
+      "StackId": "arn:aws:cloudformation:us-west-2:105526813938:stack/amplify-integratedresume-dev-163734/854bf080-48f4-11ed-8d2e-068afa237edb",
+      "AmplifyAppId": "d3775gyp4nlwqw"
+    },
+    "categories": {
+      "hosting": {
+        "amplifyhosting": {
+          "appId": "d3775gyp4nlwqw",
+          "type": "cicd"
         }
+      }
     }
+  }
 }
