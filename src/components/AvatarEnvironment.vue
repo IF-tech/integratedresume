@@ -10,42 +10,15 @@
   </div>
 </template>
 
-<!-- Primary Scene Renderer -->
-<script type="module" src="./scripts/particles.js"></script>
-
-<script></script>
-
 <script>
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import * as THREE from "three";
-import { ObjectLoader } from "three";
-
-import {
-  hemiLight,
-  dirLight,
-  ambientLight,
-  pointLight,
-} from "./scripts/lighting.js";
-
-import { points } from "./scripts/particles.js";
-import { loadRock, loadStump, loadTree } from "./scripts/loadprops.js";
-import {
-  moveJoint,
-  getMousePos,
-  getMouseDegrees,
-} from "./scripts/character.js";
 
 export default {
   name: "IntegratedResumeVueAmplifyAvatarEnvironment",
 
   data() {
-    return {
-      camera: null,
-      scene: null,
-      renderer: null,
-      mesh: null,
-      mixer: null,
-    };
+    return {};
   },
 
   mounted() {
@@ -53,21 +26,20 @@ export default {
   },
 
   methods: {
-    animate: function () {
-      if (mixer) {
-        mixer.update(clock.getDelta());
-      }
-
-      if (resizeRendererToDisplaySize(renderer)) {
-        const canvas = renderer.domElement;
-        camera.aspect = canvas.clientWidth / canvas.clientHeight;
-        camera.updateProjectionMatrix();
-      }
-
-      requestAnimationFrame(animate);
-    },
     init: function () {
-      let mixer;
+      let scene,
+        renderer,
+        camera,
+        model, // Our character
+        neck, // Reference to the neck bone in the skeleton
+        waist, // Reference to the waist bone in the skeleton
+        possibleAnims, // Animations found in our file
+        mixer, // THREE.js animations mixer
+        idle, // Idle, the default state our character returns to
+        clock = new THREE.Clock(), // Used for anims, which run to a clock instead of frame rate
+        currentlyAnimating = false, // Used to check whether characters neck is being used in another anim
+        raycaster = new THREE.Raycaster(), // Used to detect the click on our character
+        loaderAnim = document.getElementById("js-loader");
       const sizes = {
         width: window.innerWidth,
         height: window.innerHeight,
@@ -76,26 +48,26 @@ export default {
       const canvas = document.querySelector("#c");
       const backgroundColor = 0x121212;
 
-      const scene = new THREE.Scene();
+      scene = new THREE.Scene();
       scene.background = new THREE.Color(backgroundColor);
       scene.fog = new THREE.Fog(backgroundColor, 40, 100);
 
-      const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+      renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
       renderer.shadowMap.enabled = true;
       renderer.setPixelRatio(window.devicePixelRatio);
       document.body.appendChild(renderer.domElement);
 
       // Add a camera
-    const camera = new THREE.PerspectiveCamera(
-      50,
-      window.innerWidth / window.innerHeight,
-      0.1,
-      1000
-    );
-    camera.position.z = 55;
-    camera.position.x = 0;
-    camera.position.y =15;
-    camera.rotation.x = -0.3;
+      camera = new THREE.PerspectiveCamera(
+        50,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        1000
+      );
+      camera.position.z = 55;
+      camera.position.x = 0;
+      camera.position.y = 15;
+      camera.rotation.x = -0.3;
 
       let hemiLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 0.4);
       hemiLight.position.set(100, 100, 100);
@@ -156,12 +128,12 @@ export default {
       const MODEL_PATH =
         "https://iftechpublicassets.s3.us-west-2.amazonaws.com/sittingidle.glb";
 
-      let loader = new GLTFLoader();
+      const loader = new GLTFLoader();
 
       loader.load(
         MODEL_PATH,
         function (gltf) {
-          const model = gltf.scene;
+          model = gltf.scene;
 
           const fileAnimations = gltf.animations;
           model.traverse((o) => {
@@ -186,14 +158,14 @@ export default {
           model.position.y = -11;
 
           scene.add(model);
-          this.mixer = new THREE.AnimationMixer(model);
+          mixer = new THREE.AnimationMixer(model);
 
           let idleAnim = THREE.AnimationClip.findByName(fileAnimations, "idle");
 
           idleAnim.tracks.splice(3, 3);
           idleAnim.tracks.splice(9, 3);
 
-          let idle = mixer.clipAction(idleAnim);
+          idle = mixer.clipAction(idleAnim);
           idle.play();
         },
         undefined, // We don't need this function
@@ -206,28 +178,25 @@ export default {
        * Sizes
        */
 
-    //   window.addEventListener("resize", () => {
-    //     // Update sizes
-    //     sizes.width = window.innerWidth;
-    //     sizes.height = window.innerHeight;
+      //   window.addEventListener("resize", () => {
+      //     // Update sizes
+      //     sizes.width = window.innerWidth;
+      //     sizes.height = window.innerHeight;
 
-    //     // Update camera
-    //     camera.aspect = sizes.width / sizes.height;
-    //     camera.updateProjectionMatrix();
+      //     // Update camera
+      //     camera.aspect = sizes.width / sizes.height;
+      //     camera.updateProjectionMatrix();
 
-    //     // Update renderer
-    //     renderer.setSize(sizes.width, sizes.height);
-    //     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    //   });
+      //     // Update renderer
+      //     renderer.setSize(sizes.width, sizes.height);
+      //     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      //   });
       /**
        * Animate
        */
 
-      let clock = new THREE.Clock();
-      let ticks = 0;
-
       const tick = () => {
-        ticks += 1;
+       
         const elapsedTime = clock.getElapsedTime();
 
         if (mixer) {
