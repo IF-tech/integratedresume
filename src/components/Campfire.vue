@@ -14,14 +14,14 @@
       id="scenesetter"
       ><v-row>
         <v-col>
-          <v-color-picker
+          <!-- <v-color-picker
             v-model="backgroundColor"
             mode="hexa"
             dot-size="25"
             swatches-max-height="200"
             :value="this.backgroundColor"
-          ></v-color-picker
-        ></v-col> </v-row
+          ></v-color-picker> -->
+        </v-col> </v-row
     ></v-container>
 
     <canvas class="webgl"></canvas>
@@ -45,13 +45,12 @@ export default {
   },
 
   mounted() {
-   
     this.init();
   },
 
   methods: {
     init: function () {
-      let spike1, spike2, spike3;
+      let spike1, spike2, spike3, mixer, idle, neck, waist;
       // Canvas
       const canvas = document.querySelector("canvas.webgl");
 
@@ -183,13 +182,14 @@ export default {
         }
       );
 
+      //load firespikies
       const FIRESPIKE_PATH =
         "https://iftechpublicassets.s3.us-west-2.amazonaws.com/firespike.glb";
       loader.load(
         FIRESPIKE_PATH,
         function (gltf) {
           const model = gltf.scene;
-         
+
           var newMaterial = new THREE.MeshStandardMaterial({
             transparent: true,
             color: 0xfcba03,
@@ -205,7 +205,7 @@ export default {
           model.position.z = 21;
           model.castShadow = true;
 
-          spike1=model;
+          spike1 = model;
           scene.add(model);
         },
         undefined, // We don't need this function
@@ -215,71 +215,183 @@ export default {
       );
 
       loader.load(
-      FIRESPIKE_PATH,
-      function (gltf) {
-        const model = gltf.scene;
-        var newMaterial = new THREE.MeshStandardMaterial({
-          transparent: true,
-          color: 0xfcba03,
-          opacity: 0.8,
-        });
+        FIRESPIKE_PATH,
+        function (gltf) {
+          const model = gltf.scene;
+          var newMaterial = new THREE.MeshStandardMaterial({
+            transparent: true,
+            color: 0xfcba03,
+            opacity: 0.8,
+          });
 
-        model.scale.set(0.8, 0.8, 0.8);
-        model.position.y = -3.6;
-        model.position.x = -5.3;
-        model.position.z = 20.5;
-        model.name = "spike3";
-        model.castShadow = true;
-        model.traverse((o) => {
-          if (o.isMesh) o.material = newMaterial;
-        });
+          model.scale.set(0.8, 0.8, 0.8);
+          model.position.y = -3.6;
+          model.position.x = -5.3;
+          model.position.z = 20.5;
+          model.name = "spike3";
+          model.castShadow = true;
+          model.traverse((o) => {
+            if (o.isMesh) o.material = newMaterial;
+          });
 
-        spike3 = model;
+          spike3 = model;
 
-        scene.add(model);
-      },
-      undefined, // We don't need this function
-      function (error) {
-        console.error(error);
-      }
-    );
-    loader.load(
-      FIRESPIKE_PATH,
-      function (gltf) {
-        const model = gltf.scene;
-        var newMaterial = new THREE.MeshStandardMaterial({
-          transparent: true,
-          color: 0xfcba03,
-          opacity: 0.8,
-        });
+          scene.add(model);
+        },
+        undefined, // We don't need this function
+        function (error) {
+          console.error(error);
+        }
+      );
+      loader.load(
+        FIRESPIKE_PATH,
+        function (gltf) {
+          const model = gltf.scene;
+          var newMaterial = new THREE.MeshStandardMaterial({
+            transparent: true,
+            color: 0xfcba03,
+            opacity: 0.8,
+          });
 
-        model.scale.set(0.8, 0.8, 0.8);
-        model.position.y = -3.6;
-        model.position.x = -2;
-        model.position.z = 20.5;
-        model.name = "spike2";
-        model.castShadow = true;
-        model.traverse((o) => {
-          if (o.isMesh) o.material = newMaterial;
-        });
+          model.scale.set(0.8, 0.8, 0.8);
+          model.position.y = -3.6;
+          model.position.x = -2;
+          model.position.z = 20.5;
+          model.name = "spike2";
+          model.castShadow = true;
+          model.traverse((o) => {
+            if (o.isMesh) o.material = newMaterial;
+          });
 
-        spike2 = model;
+          spike2 = model;
 
-        scene.add(model);
-      },
-      undefined, // We don't need this function
-      function (error) {
-        console.error(error);
-      }
-    );
+          scene.add(model);
+        },
+        undefined, // We don't need this function
+        function (error) {
+          console.error(error);
+        }
+      );
 
+      //character
+      //add character model
+      const MODEL_PATH =
+        "https://iftechpublicassets.s3.us-west-2.amazonaws.com/sittingidle.glb";
+      loader.load(
+        MODEL_PATH,
+        function (gltf) {
+          // A lot is going to happen here
+          const model = gltf.scene;
+          let fileAnimations = gltf.animations;
+          model.traverse((o) => {
+            //   console.log(o);
+            //   if (o.isBone) {
+            //     console.log(o.name);
+            //   }
+            if (o.isMesh) {
+              o.castShadow = true;
+              o.receiveShadow = false;
+            }
+            // Reference the neck and waist bones
+            if (o.isBone && o.name === "mixamorigHead") {
+              neck = o;
+            }
+            if (o.isBone && o.name === "mixamorigNeck") {
+              waist = o;
+            }
+          });
+
+          model.scale.set(5, 5, 5);
+          model.position.y = -11;
+
+          scene.add(model);
+
+          mixer = new THREE.AnimationMixer(model);
+          let idleAnim = THREE.AnimationClip.findByName(fileAnimations, "idle");
+
+          idleAnim.tracks.splice(3, 3);
+          idleAnim.tracks.splice(9, 3);
+
+          idle = mixer.clipAction(idleAnim);
+          idle.play();
+        },
+        undefined, // We don't need this function
+        function (error) {
+          // console.error(error);
+        }
+      );
+      document.addEventListener("mousemove", function (e) {
+        let mousecoords = getMousePos(e);
+        if (waist) {
+      
+          moveJoint(mousecoords, waist, 40);
+          //   console.log(mousecoords);
+        }
+      });
       /**
        * Animate
        */
 
+      function getMousePos(e) {
+        return { x: e.clientX, y: e.clientY};
+      }
+
+      function moveJoint(mouse, joint, degreeLimit) {
+        let degrees = getMouseDegrees(mouse.x, mouse.y, degreeLimit);
+        joint.rotation.y = THREE.MathUtils.degToRad(degrees.x)
+        joint.rotation.x = THREE.MathUtils.degToRad(degrees.y)
+      }
+
+      function getMouseDegrees(x, y, degreeLimit) {
+        let dx = 0,
+          dy = 0,
+          xdiff,
+          xPercentage,
+          ydiff,
+          yPercentage;
+
+        let w = { x: window.innerWidth, y: window.innerHeight };
+
+        // Left (Rotates neck left between 0 and -degreeLimit)
+        // 1. If cursor is in the left half of screen
+        if (x <= w.x / 2) {
+          // 2. Get the difference between middle of screen and cursor position
+          xdiff = w.x / 3 - x;
+          // 3. Find the percentage of that difference (percentage toward edge of screen)
+          xPercentage = (xdiff / (w.x / 2)) * 100;
+          // 4. Convert that to a percentage of the maximum rotation we allow for the neck
+          dx = ((degreeLimit * 1.5 * xPercentage) / 100) * -1;
+        }
+
+        // Right (Rotates neck right between 0 and degreeLimit)
+        if (x >= w.x / 2) {
+          xdiff = x - w.x / 3;
+          xPercentage = (xdiff / (w.x / 2)) * 100;
+          dx = (degreeLimit * 1.3 * xPercentage) / 100;
+        }
+        // Up (Rotates neck up between 0 and -degreeLimit)
+        if (y <= w.y / 2) {
+          ydiff = w.y / 2 - y;
+          yPercentage = (ydiff / (w.y / 2)) * 100;
+          // Note that I cut degreeLimit in half when they look up
+          dy = ((degreeLimit * yPercentage) / 100) * -1;
+        }
+        // Down (Rotates neck down between 0 and degreeLimit)
+        if (y >= w.y / 2) {
+          ydiff = y - w.y / 2;
+          yPercentage = (ydiff / (w.y / 2)) * 100;
+          dy = (degreeLimit * yPercentage) / 100;
+        }
+        return { x: dx, y: dy };
+      }
+
       const clock = new THREE.Clock();
 
       const tick = () => {
+        if (mixer) {
+          mixer.update(clock.getDelta());
+        }
+
         scene.background = new THREE.Color(this.backgroundColor);
         scene.fog = new THREE.Fog(this.backgroundColor, 60, 100);
         scene.children[4].material.color = new THREE.Color(
@@ -290,32 +402,27 @@ export default {
         pointLight.intensity = (pointLight.intensity + newintensity) / 2;
         renderer.render(scene, camera);
 
-       
-      if(spike1){
-        let newscale = getRandomArbitrary(1.0, 1.3);
-        spike1.scale.y = (spike1.scale.y + newscale) / 2;
-        renderer.render(scene, camera);
-      }
+        if (spike1) {
+          let newscale = getRandomArbitrary(1.0, 1.3);
+          spike1.scale.y = (spike1.scale.y + newscale) / 2;
+          renderer.render(scene, camera);
+        }
 
-      if(spike2){
-        let newscale = getRandomArbitrary(1.0, 1.3);
-        spike2.scale.y = (spike2.scale.y + newscale) / 2;
-        renderer.render(scene, camera);
-      }
+        if (spike2) {
+          let newscale = getRandomArbitrary(1.0, 1.3);
+          spike2.scale.y = (spike2.scale.y + newscale) / 2;
+          renderer.render(scene, camera);
+        }
 
-      if(spike3){
-        let newscale = getRandomArbitrary(1.0, 1.3);
-        spike3.scale.y = (spike3.scale.y + newscale) / 2;
-        renderer.render(scene, camera);
-      }
-
-
+        if (spike3) {
+          let newscale = getRandomArbitrary(1.0, 1.3);
+          spike3.scale.y = (spike3.scale.y + newscale) / 2;
+          renderer.render(scene, camera);
+        }
 
         function getRandomArbitrary(min, max) {
           return Math.random() * (max - min) + min;
         }
-
-
 
         // Render
         renderer.render(scene, camera);
