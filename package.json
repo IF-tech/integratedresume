@@ -7,12 +7,14 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
+    "@georgedoescode/spline": "^1.0.1",
     "core-js": "^3.8.3",
     "css-loader": "^6.7.1",
     "d3": "^7.6.1",
     "file-loader": "^6.2.0",
     "gsap": "^3.11.3",
     "lil-gui": "^0.17.0",
+    "simplex-noise": "^4.0.0",
     "style-loader": "^3.3.1",
     "three": "^0.145.0",
     "url-loader": "^4.1.1",

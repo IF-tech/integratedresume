@@ -1,8 +1,8 @@
 <template>
   <!-- <avatar-environment></avatar-environment> -->
    <!-- <threejs-floor-only></threejs-floor-only> -->
-   <campfire></campfire>
-
+   <!-- <campfire></campfire> -->
+<working-in-the-woods-scene></working-in-the-woods-scene>
 </template>
 
 <script>
@@ -11,6 +11,7 @@ import AvatarEnvironment from '@/components/AvatarEnvironment.vue';
 import Campfire from '@/components/Campfire.vue';
 import ThreejsEmptyScene from '@/components/ThreejsEmptyScene.vue';
 import ThreejsFloorOnly from '@/components/ThreejsFloorOnly.vue';
+import WorkingInTheWoodsScene from '../components/WorkingInTheWoodsScene.vue';
 
 
   export default {
@@ -21,7 +22,8 @@ import ThreejsFloorOnly from '@/components/ThreejsFloorOnly.vue';
     AvatarEnvironment,
     Campfire,
     ThreejsEmptyScene,
-    ThreejsFloorOnly
+    ThreejsFloorOnly,
+    WorkingInTheWoodsScene
 },
   }
 </script>
