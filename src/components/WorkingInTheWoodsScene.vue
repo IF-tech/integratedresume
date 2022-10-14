@@ -13,10 +13,7 @@
         id="scenesetter"
         ><v-row justify="center">
           <v-col justify="center">
-        <chart  style="
-         visibility: visible;
-          position: fixed;
-          z-index: 1;"></chart>
+      
             <blob></blob>
             <!-- <v-color-picker
               v-model="backgroundColor"
