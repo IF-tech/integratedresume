@@ -3,7 +3,7 @@
       <v-container
         style="
           position: fixed;
-          z-index: 3;
+          z-index: 1;
           top: 0;
           left: 0;
         
@@ -13,6 +13,10 @@
         id="scenesetter"
         ><v-row justify="center">
           <v-col justify="center">
+        <chart  style="
+         visibility: visible;
+          position: fixed;
+          z-index: 1;"></chart>
             <blob></blob>
             <!-- <v-color-picker
               v-model="backgroundColor"
@@ -35,6 +39,8 @@
   import * as THREE from "three";
   import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
   import Blob from '@/components/Blob.vue';
+import SplineBlob from './SplineBlob.vue';
+import Chart from './Chart.vue';
   export default {
     name: "IntegratedResumeVueAmplifyWorkingInTheWoodsScene",
   
@@ -435,7 +441,9 @@
     },
 
     components: {
-        Blob
+        Blob,
+        SplineBlob,
+        Chart
     }
   };
 </script>

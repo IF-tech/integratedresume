@@ -10,10 +10,19 @@
   width: 100px;
   margin-top: 0;
   padding: 10px;" class="material-symbols-outlined">
-   cancel
-   </span>
+X   </span>
 </div></div>
-    <div  @click="growObject()" id="datablob" class="shape-blob" ref="blob"></div>
+<svg @click="growObject()" id="datablob" class="shape-blob" ref="blob" viewBox="0 0 200 200">
+      
+      <defs>
+        <linearGradient id="gradient" gradientTransform="rotate(90)">
+          <stop id="gradientStop1" offset="0%" stop-color="var(--devStartColor)" />
+          <stop id="gradientStop2 " offset="100%" stop-color="var(--devStopColor)" />
+        </linearGradient>
+      </defs>
+      <path onclick="growdev()" id="devblobpath" d="" fill="url('#gradient')"> </path>
+    </svg>
+    <!-- <div  @click="growObject()" id="datablob" class="shape-blob" ref="blob"></div> -->
   </div>
 </template>
 
@@ -21,6 +30,7 @@
 
 <script>
 import gsap from "gsap";
+
 
 export default {
   name: "IntegratedResumeVueAmplifyBlob",
@@ -46,7 +56,7 @@ export default {
     console.log("grow function called")
    
 
-    gsap.to(".shape-blob", { height: 200, width: 200, left: "45vw", top: 50, duration: 1 });
+    gsap.to(".shape-blob", { height: 200, width: 200, left: "45vw", top: 50, duration: .3 });
     console.log("grow function finished")
   }
   },
@@ -54,7 +64,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import url("https://fonts.googleapis.com/css?family=Playfair+Display:400,900");
+:root {
+
+  }
 
 body {
   margin: 0;
@@ -73,7 +85,7 @@ body {
 }
 
 .shape-blob {
-  background: #ed1250;
+  background-image: linear-gradient(150deg, rgb(65, 255, 239), rgb(6, 184, 216));
   height: 200px;
   width: 200px;
   border-radius: 30% 50% 20% 40%;
@@ -84,6 +96,7 @@ body {
   left: 45vw;
   top: 50px;
 }
+
 
 @keyframes transform {
   0%,

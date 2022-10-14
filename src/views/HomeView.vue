@@ -3,6 +3,7 @@
    <!-- <threejs-floor-only></threejs-floor-only> -->
    <!-- <campfire></campfire> -->
 <working-in-the-woods-scene></working-in-the-woods-scene>
+<!-- <chart></chart> -->
 </template>
 
 <script>
@@ -12,6 +13,7 @@ import Campfire from '@/components/Campfire.vue';
 import ThreejsEmptyScene from '@/components/ThreejsEmptyScene.vue';
 import ThreejsFloorOnly from '@/components/ThreejsFloorOnly.vue';
 import WorkingInTheWoodsScene from '../components/WorkingInTheWoodsScene.vue';
+import Chart from '@/components/Chart.vue';
 
 
   export default {
@@ -23,7 +25,8 @@ import WorkingInTheWoodsScene from '../components/WorkingInTheWoodsScene.vue';
     Campfire,
     ThreejsEmptyScene,
     ThreejsFloorOnly,
-    WorkingInTheWoodsScene
+    WorkingInTheWoodsScene,
+    Chart
 },
   }
 </script>
