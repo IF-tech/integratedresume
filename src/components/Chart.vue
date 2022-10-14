@@ -1,7 +1,6 @@
 <template>
   <div>
-    <v-container>
-        <h1>Ian Floyd Tools and Skills</h1>
+
     <div id="toolbar">
       <a href="#" id="all" class="button active">All</a>
       <a href="#" id="year" class="button">Timeline</a>
@@ -10,10 +9,10 @@
       <a href="#" id="development" class="button">Development</a>
       <a href="#" id="design" class="button">Design</a></div>
       <div id="vis"></div>
-    </v-container>
+
   </div>
 </template>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.6.1/d3.min.js" integrity="sha512-MefNfAGJ/pEy89xLOFs3V6pYPs6AmUhXJrRlydI/9wZuGrqxmrdQ80zKHUcyadAcpH67teDZcBeS6oMJLPtTqw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
 <script>
 import * as d3 from "d3";
 export default {
@@ -124,7 +123,7 @@ const groupCenters = {
   const fillColor = d3
     .scaleOrdinal()
     .domain(["development", "data", "design"])
-    .range(["#F16529", "#1C88C7", "#FCC700"]);
+    .range(["#ffffff", "#d4d4d4", "#a8a8a8"]);
 
   // Create new circle elements each with class `bubble`.
   // There will be one circle.bubble for each object in the nodes array.
@@ -139,10 +138,10 @@ const groupCenters = {
     .attr("fill", function (d) {
       return fillColor(d.group);
     })
-    .attr("stroke", function (d) {
-      return d3.rgb(fillColor(d.group)).darker();
-    })
-    .attr("stroke-width", 2);
+    // .attr("stroke", function (d) {
+    //   return d3.rgb(fillColor(d.group)).darker();
+    // })
+    // .attr("stroke-width", 2);
 
   //Merge the original empty selection and the enter selection
   bubbles = bubbles.merge(bubblesE);
@@ -319,6 +318,7 @@ a, a:visited, a:active {
     font-size: 13px;
     border: 1px solid #e0e0e0;
     text-decoration: none;
+    right: 50%
   }
   
   .button.active {
@@ -327,5 +327,8 @@ a, a:visited, a:active {
   }
   
 
-  
+  #toolbar {
+    margin-top: 10px;
+    margin-left: 50%
+  }
 </style>
