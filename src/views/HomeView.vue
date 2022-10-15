@@ -3,6 +3,7 @@
    <!-- <threejs-floor-only></threejs-floor-only> -->
    <!-- <campfire></campfire> -->
 <working-in-the-woods-scene></working-in-the-woods-scene>
+<!-- <svg-playground></svg-playground> -->
 <!-- <chart></chart> -->
 </template>
 
@@ -14,6 +15,7 @@ import ThreejsEmptyScene from '@/components/ThreejsEmptyScene.vue';
 import ThreejsFloorOnly from '@/components/ThreejsFloorOnly.vue';
 import WorkingInTheWoodsScene from '../components/WorkingInTheWoodsScene.vue';
 import Chart from '@/components/Chart.vue';
+import SvgPlayground from '@/components/svgPlayground.vue';
 
 
   export default {
@@ -26,7 +28,8 @@ import Chart from '@/components/Chart.vue';
     ThreejsEmptyScene,
     ThreejsFloorOnly,
     WorkingInTheWoodsScene,
-    Chart
+    Chart,
+    SvgPlayground
 },
   }
 </script>

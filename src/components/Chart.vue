@@ -251,7 +251,7 @@ const groupCenters = {
    function showYearTitles() {
     // Another way to do this would be to create
     // the year texts once and then just hide them.
-    var yearsData = ["'12"]
+   
     var years = svg.selectAll(".year").data(yearsData);
 
     years

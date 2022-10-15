@@ -14,16 +14,17 @@ X   </span>
 </div></div>
 
 <div id="chartoverlay" style="visibility:hidden">
-
+<v-container>
 <div id="toolbar">
   <a href="#" id="all" class="button active">All</a>
   <a href="#" id="year" class="button">Timeline</a>
-  <a href="#" id="pillars" class="button">Pillars</a>
-  <a href="#" id="data" class="button">Data</a>
+  <a href="#" id="pillars" class="button">Domain</a>
+  <!-- <a href="#" id="data" class="button">Data</a>
   <a href="#" id="development" class="button">Development</a>
-  <a href="#" id="design" class="button">Design</a></div>
+  <a href="#" id="design" class="button">Design</a> -->
+</div>
   <div id="vis"></div>
-
+</v-container>
 </div>
 
 
@@ -43,33 +44,50 @@ export default {
   name: "IntegratedResumeVueAmplifyBlob",
 
   data() {
-    return {};
+    return {
+        datapath: "https://iftechpublicassets.s3.us-west-2.amazonaws.com/resumedata.json",
+        width: 900,
+        height: 300
+    };
   },
 
   mounted() {
         //get size of window, or define it
-const width = window.innerWidth;
-const height = window.innerHeight;
+    this.init()
+
+  
+
+  },
+
+  methods: {
+    init(){
+
+        this.width = window.innerWidth;
+        this.height = window.innerheight;
+        
+        let width = 2000;
+        let height = 1000;
+
     // X locations of the year titles.
 const yearsTitleX = {
   12: 150,
-  13: (width/4)-150,
-  14: (width/3.5)-150,
-  15: (width/3)-150,
-  16: (width/2.5)-150,
-  17: width/2-150,
-  18: (width/1.8)-150,
-  19: (width/1.7)-150,
-  20: (width/1.6)-150,
-  21: (width/1.4)-150,
-  22: (width/1.2)-150,
-  23: width-150
+  13: (this.width/4)-150,
+  14: (this.width/3.5)-150,
+  15: (this.width/3)-150,
+  16: (this.width/2.5)-150,
+  17: this.width/2-150,
+  18: (this.width/1.8)-150,
+  19: (this.width/1.7)-150,
+  20: (this.width/1.6)-150,
+  21: (this.width/1.4)-150,
+  22: (this.width/1.2)-150,
+  23: this.width-150
 };
 
 
 //strength at which to force bubbles to new locations
 const forceStrength = 0.03;
-const center = { x: width / 2, y: height / 2 };
+let center = { x: width / 2, y: height / 2 };
 const yearCenters = {
   2012: { x: 300, y: height / 2 },
   2013: { x: (width/2.8)-300, y: height / 2 },
@@ -91,9 +109,7 @@ const groupCenters = {
     "design": {x: width/1.5, y : height},
   };
 
-    const FILEPATH =
-      "https://iftechpublicassets.s3.us-west-2.amazonaws.com/resumedata.json";
-    d3.json(FILEPATH)
+    d3.json(this.datapath)
       .then((json) => {
         this.data = json;
         let nodes = createNodes(this.data);
@@ -111,11 +127,35 @@ const groupCenters = {
     return d.id;
   });
 
+  console.log(bubbles)
+
   function charge(d) {
     return -Math.pow(d.radius, 2.05) * forceStrength;
   }
 
   function ticked() {
+
+   const current_width = window.innerWidth;
+   const  current_height = window.innerHeight;
+   const current_ratio = current_width / current_height;
+
+   if(current_ratio != (width/height)){
+    let newwidth = current_width;
+    let newheight = current_height;
+    console.log("ratio changed")
+    svg = d3
+    .select("#vis")
+    .append("svg")
+    .attr("width", newwidth)
+    .attr("height", newheight);
+    center = { x: current_width / 2, y: current_height / 2 }
+    regroupOnNewCenter(center)
+   }
+
+   height = current_height;
+   width = current_width;
+
+
     bubbles
       .attr("cx", function (d) {
         return d.x;
@@ -157,9 +197,11 @@ const groupCenters = {
     .append("circle")
     .classed("bubble", true)
     .attr("r", 0)
+    .attr("opacity", .9)
     .attr("fill", function (d) {
       return fillColor(d.group);
     })
+
     // .attr("stroke", function (d) {
     //   return d3.rgb(fillColor(d.group)).darker();
     // })
@@ -168,6 +210,16 @@ const groupCenters = {
   //Merge the original empty selection and the enter selection
   bubbles = bubbles.merge(bubblesE);
 
+let bubblesI = bubbles.append("image")
+      .attr("xlink:href", "https://github.com/favicon.ico")
+      .attr("x", -8)
+      .attr("y", -8)
+      .attr("width", 16)
+      .attr("height", 16)
+      .attr("z-index", 10)
+      .attr("position", "fixed")
+
+      bubbles = bubbles.merge(bubblesI);     
   // Transition to make bubbles appear
   bubbles
     .transition()
@@ -223,6 +275,7 @@ const groupCenters = {
           name: d.tool_name,
           group: d.group,
           year: d.start_year,
+          imagelink: "https://iftechpublicassets.s3.us-west-2.amazonaws.com/technologylogos/javascript-logo-number-angularjs-node-javascript-logo-11563241338go76tq0nxz.png",
           x: Math.random() * 900,
           y: Math.random() * 800,
         };
@@ -238,6 +291,14 @@ const groupCenters = {
 
     function groupBubbles() {
     hideYearTitles();
+    // Reset the 'x' force to draw the bubbles to the center.
+    simulation.force("x", d3.forceX().strength(forceStrength).x(center.x));
+
+    //We can reset the alpha value and restart the simulation
+    simulation.alpha(1).restart();
+  }
+
+  function regroupOnNewCenter(center) {
     // Reset the 'x' force to draw the bubbles to the center.
     simulation.force("x", d3.forceX().strength(forceStrength).x(center.x));
 
@@ -316,12 +377,8 @@ const groupCenters = {
       .catch((error) => {
         console.error(error);
       });
+    },
 
-  
-
-  },
-
-  methods: {
     growObject(){
     console.log("grow function called")
         
@@ -385,16 +442,16 @@ a, a:visited, a:active {
     margin-left: 50%
   }
 
-.container {
-  background: #0a2463;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  position: relative;
-}
+// .container {
+//   background: #0a2463;
+//   min-height: 100vh;
+//   display: flex;
+//   flex-direction: row;
+//   align-items: center;
+//   justify-content: center;
+//   overflow: hidden;
+//   position: relative;
+// }
 
 .shape-blob {
   background-image: linear-gradient(150deg, rgb(65, 255, 239), rgb(6, 184, 216));

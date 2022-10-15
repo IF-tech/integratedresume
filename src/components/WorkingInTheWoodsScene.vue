@@ -275,7 +275,50 @@ import Chart from './Chart.vue';
             console.error(error);
           }
         );
-  
+
+        const STUMP_PATH = "https://iftechpublicassets.s3.us-west-2.amazonaws.com/stumpandlaptop.glb";
+   
+    loader.load(
+        STUMP_PATH,
+        function (gltf) {
+          // A lot is going to happen here
+         const model = gltf.scene;
+          
+    
+          model.scale.set(5, 5, 5);
+          model.position.y = -11;
+          model.position.x = 9;
+          model.position.z = 3;
+          model.rotation.y = 180.2;
+          model.castShadow = true;
+          model.recieveShadow = true;
+          scene.add(model);
+        },
+        undefined, // We don't need this function
+        function (error) {
+          console.error(error);
+        }
+      );
+      let TREE_PATH = "https://iftechpublicassets.s3.us-west-2.amazonaws.com/generictree.glb";
+    loader.load(
+      TREE_PATH,
+      function (gltf) {
+        // A lot is going to happen here
+        const model = gltf.scene;
+        model.castShadow = true;
+        model.recieveShadow = true;
+        model.scale.set(50, 50, 50);
+        model.position.y = -3;
+        model.position.x = -.5;
+        model.position.z = -3;
+
+        scene.add(model);
+      },
+      undefined, // We don't need this function
+      function (error) {
+        console.error(error);
+      }
+    );
         //character
         //add character model
         const MODEL_PATH =
@@ -331,6 +374,9 @@ import Chart from './Chart.vue';
             //   console.log(mousecoords);
           }
         });
+        
+        //load tree and rocks
+
         /**
          * Animate
          */
