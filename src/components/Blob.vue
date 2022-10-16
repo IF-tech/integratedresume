@@ -15,14 +15,6 @@ X   </span>
 
 <div id="chartoverlay" style="visibility:hidden">
 <v-container>
-<div id="toolbar">
-  <a href="#" id="all" class="button active">All</a>
-  <a href="#" id="year" class="button">Timeline</a>
-  <a href="#" id="pillars" class="button">Domain</a>
-  <!-- <a href="#" id="data" class="button">Data</a>
-  <a href="#" id="development" class="button">Development</a>
-  <a href="#" id="design" class="button">Design</a> -->
-</div>
   <div id="vis"></div>
 </v-container>
 </div>
@@ -87,7 +79,7 @@ const yearsTitleX = {
 
 //strength at which to force bubbles to new locations
 const forceStrength = 0.03;
-let center = { x: width / 2, y: height / 2 };
+let center = { x: width / 2, y: (height / 2)-100 };
 const yearCenters = {
   2012: { x: 300, y: height / 2 },
   2013: { x: (width/2.8)-300, y: height / 2 },
@@ -210,16 +202,7 @@ const groupCenters = {
   //Merge the original empty selection and the enter selection
   bubbles = bubbles.merge(bubblesE);
 
-let bubblesI = bubbles.append("image")
-      .attr("xlink:href", "https://github.com/favicon.ico")
-      .attr("x", -8)
-      .attr("y", -8)
-      .attr("width", 16)
-      .attr("height", 16)
-      .attr("z-index", 10)
-      .attr("position", "fixed")
-
-      bubbles = bubbles.merge(bubblesI);     
+    
   // Transition to make bubbles appear
   bubbles
     .transition()
@@ -439,7 +422,7 @@ a, a:visited, a:active {
 
   #toolbar {
     margin-top: 10px;
-    margin-left: 50%
+    margin-left: 46vw;
   }
 
 // .container {

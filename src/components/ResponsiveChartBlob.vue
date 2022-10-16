@@ -1,17 +1,41 @@
 <template>
-  <div id="chartbounds">
-    <div id="windowsize-readout">{{ islandscape }}</div>
-    <div id="vis"></div>
+ <div>
+    <div id="overlay">
+
+<div style="visibility:hidden" id="closedatawindow" @click="shrinkObject()">
+  <span style=" position: fixed; z-index: 5;
+  
+  top: 0;
+  left: 0;
+  width: 100px;
+  margin-top: 0;
+  padding: 10px;" class="material-symbols-outlined">
+X   </span>
+</div></div>
+
+<div id="chartoverlay" style="visibility:hidden">
+<v-container>
+  <div id="chartvis"></div>
+  <div id="vis"></div>
+</v-container>
+</div>
+
+
+<svg @click="growObject()" id="datablob" class="shape-blob" ref="blob" viewBox="0 0 200 200">
+    </svg>
+   
   </div>
 </template>
 
 <script>
+import gsap from "gsap";
 import * as d3 from "d3";
 export default {
-  name: "IntegratedResumeVueAmplifySvgPlayground",
+    name: 'IntegratedResumeVueAmplifyResponsiveChartBlob',
 
-  data() {
-    return {
+    data() {
+        return {
+      forceStrength: 0.03,
       simulation:null,
       islandscape: null,
       svg: null,
@@ -20,12 +44,11 @@ export default {
       width: 0,
       centerpoint: { x: 0, y: 0 },
       forcepoints: [],
-    };
-  },
+        };
+    },
 
-  mounted() {
-    
-    //assign starting height and width based on window size
+    mounted() {
+         //assign starting height and width based on window size
     this.width = window.innerWidth;
     this.height = window.innerHeight;
     //define constants
@@ -35,21 +58,6 @@ export default {
     } else {
       this.islandscape = true;
     }
-    const yearsTitleX = {
-      12: 150,
-      13: this.width / 4 - 150,
-      14: this.width / 3.5 - 150,
-      15: this.width / 3 - 150,
-      16: this.width / 2.5 - 150,
-      17: this.width / 2 - 150,
-      18: this.width / 1.8 - 150,
-      19: this.width / 1.7 - 150,
-      20: this.width / 1.6 - 150,
-      21: this.width / 1.4 - 150,
-      22: this.width / 1.2 - 150,
-      23: this.width - 150,
-    };
-
     //strength at which to force bubbles to new locations
     const forceStrength = 0.03;
     this.centerpoint = { x: this.width / 2, y: this.height / 2 };
@@ -89,21 +97,14 @@ export default {
       }
     });
 
-  
+    },
 
-    
-  },
-
-  
-
-  methods: {
-
-
-    draw(){
+    methods: {
+        draw(){
         const forceStrength = 0.03;
         d3.selectAll("svg").remove()
         this.svg = d3
-      .select("#vis")
+      .select("#chartvis")
       .append("svg")
       .attr("width", window.innerWidth)
       .attr("height", window.innerHeight);
@@ -286,9 +287,120 @@ export default {
 
       
     },
+    growObject(){
+    console.log("grow function called")
+        
+
+    gsap.to(".shape-blob", { height: 5000, width: 5000, left: -2000, top: -1100, duration: 1 });
+    document.getElementById("closedatawindow").style.visibility = 'visible';
+    document.getElementById("chartoverlay").style.visibility = 'visible';
+    document.getElementById("datablob").style.zIndex = -4;
+    document.getElementById("chartoverlay").style.zIndex = 4;
+    console.log("grow function finished")
   },
+  shrinkObject(){
+    console.log("grow function called")
+   
+
+    gsap.to(".shape-blob", { height: 200, width: 200, left: "45vw", top: 50, duration: .3 });
+    document.getElementById("closedatawindow").style.visibility = 'hidden';
+    document.getElementById("chartoverlay").style.visibility = 'hidden';
+    document.getElementById("datablob").style.zIndex = 4;
+    console.log("grow function finished")
+  }
+    },
 };
 </script>
 
 <style lang="scss" scoped>
+:root {
+
+  }
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+a, a:visited, a:active {
+    color: #444;
+  }
+  
+
+  
+  .button {
+    min-width: 130px;
+    padding: 4px 5px;
+    cursor: pointer;
+    text-align: center;
+    font-size: 13px;
+    border: 1px solid #e0e0e0;
+    text-decoration: none;
+    right: 50%
+  }
+  
+  .button.active {
+    background: #000;
+    color: #fff;
+  }
+  
+
+  #toolbar {
+    margin-top: 10px;
+    margin-left: 46vw;
+  }
+
+// .container {
+//   background: #0a2463;
+//   min-height: 100vh;
+//   display: flex;
+//   flex-direction: row;
+//   align-items: center;
+//   justify-content: center;
+//   overflow: hidden;
+//   position: relative;
+// }
+
+.shape-blob {
+  background-image: linear-gradient(150deg, rgb(65, 255, 239), rgb(6, 184, 216));
+  height: 200px;
+  width: 200px;
+  border-radius: 30% 50% 20% 40%;
+  animation: transform 5s ease-in-out infinite both alternate,
+    movement_one 10s ease-in-out infinite both;
+  opacity: 1.0;
+  position: absolute;
+  left: 45vw;
+  top: 50px;
+}
+
+
+@keyframes transform {
+  0%,
+  100% {
+    border-radius: 33% 67% 70% 30% / 30% 30% 70% 70%;
+  }
+  20% {
+    border-radius: 37% 63% 51% 49% / 37% 65% 35% 63%;
+  }
+  40% {
+    border-radius: 36% 64% 64% 36% / 64% 48% 52% 36%;
+  }
+  60% {
+    border-radius: 37% 63% 51% 49% / 30% 30% 70% 70%;
+  }
+  80% {
+    border-radius: 40% 60% 42% 58% / 41% 51% 49% 59%;
+  }
+}
+
+@keyframes movement_one {
+  0%,
+  100% {
+    transform: none;
+  }
+  50% {
+    transform: translate(10%, 10%) rotateY(10deg) scale(1.2);
+  }
+}
 </style>

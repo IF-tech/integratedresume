@@ -3,7 +3,7 @@
       <v-container
         style="
           position: fixed;
-          z-index: 1;
+          z-index: 5;
           top: 0;
           left: 0;
         
@@ -13,8 +13,10 @@
         id="scenesetter"
         ><v-row justify="center">
           <v-col justify="center">
-      
-            <blob></blob>
+
+            
+            <!-- <blob></blob> -->
+            <expandable-blob></expandable-blob>
             <!-- <v-color-picker
               v-model="backgroundColor"
               mode="hexa"
@@ -36,8 +38,10 @@
   import * as THREE from "three";
   import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
   import Blob from '@/components/Blob.vue';
-import SplineBlob from './SplineBlob.vue';
-import Chart from './Chart.vue';
+import ExpandableBlob from './ExpandableBlob.vue';
+
+
+
   export default {
     name: "IntegratedResumeVueAmplifyWorkingInTheWoodsScene",
   
@@ -433,7 +437,7 @@ import Chart from './Chart.vue';
           }
           return { x: dx, y: dy };
         }
-
+//add particle effect
         let points;
 (function(){
 const particles = 20000;
@@ -538,8 +542,8 @@ scene.add(points);
 
     components: {
         Blob,
-        SplineBlob,
-        Chart
+        ExpandableBlob,
+     
     }
   };
 </script>

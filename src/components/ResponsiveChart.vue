@@ -1,18 +1,17 @@
 <template>
-  <div id="chartbounds">
-    <div id="windowsize-readout">{{ islandscape }}</div>
-    <div id="vis"></div>
-  </div>
-</template>
+    <div id="chartbounds">
+      <div id="datavis"></div>
+    </div>
+  </template>
 
 <script>
 import * as d3 from "d3";
 export default {
-  name: "IntegratedResumeVueAmplifySvgPlayground",
+    name: 'IntegratedResumeVueAmplifyResponsiveChart',
 
-  data() {
-    return {
-      simulation:null,
+    data() {
+        return {
+            simulation:null,
       islandscape: null,
       svg: null,
       dataset: null,
@@ -20,12 +19,11 @@ export default {
       width: 0,
       centerpoint: { x: 0, y: 0 },
       forcepoints: [],
-    };
-  },
+        };
+    },
 
-  mounted() {
-    
-    //assign starting height and width based on window size
+    mounted() {
+         //assign starting height and width based on window size
     this.width = window.innerWidth;
     this.height = window.innerHeight;
     //define constants
@@ -35,36 +33,13 @@ export default {
     } else {
       this.islandscape = true;
     }
-    const yearsTitleX = {
-      12: 150,
-      13: this.width / 4 - 150,
-      14: this.width / 3.5 - 150,
-      15: this.width / 3 - 150,
-      16: this.width / 2.5 - 150,
-      17: this.width / 2 - 150,
-      18: this.width / 1.8 - 150,
-      19: this.width / 1.7 - 150,
-      20: this.width / 1.6 - 150,
-      21: this.width / 1.4 - 150,
-      22: this.width / 1.2 - 150,
-      23: this.width - 150,
-    };
 
+    
     //strength at which to force bubbles to new locations
     const forceStrength = 0.03;
     this.centerpoint = { x: this.width / 2, y: this.height / 2 };
 
-    console.log(this.centerpoint);
-
-    //load data
-    const FILEPATH =
-      "https://iftechpublicassets.s3.us-west-2.amazonaws.com/resumedata.json";
-    d3.json(FILEPATH).then((json) => {
-      this.dataset = this.processDataIntoNodes(json);
-      this.draw()
-    });
-
-    //listen for the window to be resized and adjust width and height data variables
+        //listen for the window to be resized and adjust width and height data variables
     //all behavior related to the resizing of the window is here
     window.addEventListener("resize", () => {
       // Update sizes
@@ -78,40 +53,81 @@ export default {
 
       if (window.innerWidth / window.innerHeight < 1) {
         this.islandscape = false;
-        this.drawPortrait();
+        // this.drawPortrait();
         this.alignVerticalCenter()
     
       } else {
         this.islandscape = true;
-        this.drawLandscape();
+        // this.drawLandscape();
         this.alignHorizontalCenter()
       
       }
     });
 
-  
+    //load data
+    const FILEPATH =
+      "https://iftechpublicassets.s3.us-west-2.amazonaws.com/resumedata.json";
+    d3.json(FILEPATH).then((json) => {
+      this.dataset = this.processDataIntoNodes(json);
+      this.draw()
+    });
+
 
     
-  },
 
-  
+   
+    },
 
-  methods: {
+    methods: {
+           //This method takes in a dataset which has been retrieved and then modifies and appends that data for prep to be used as nodes in a d3 graph
+    processDataIntoNodes(data) {
+      // Use the max size_score in the data as the max in the scale's domain
+      // note we have to ensure the size_score is a number.
+      const maxAmount = 100;
 
+      // Size bubbles based on area.
+      const radiusScale = d3
+        .scalePow()
+        .exponent(0.5)
+        .range([2, 40])
+        .domain([0, maxAmount]);
+
+      // Use map() to convert raw data into node data.
+      var myNodes = data.map(function (d) {
+        return {
+          id: d.id,
+          radius: radiusScale(+d.size_score),
+          value: +d.size_score,
+          name: d.tool_name,
+          group: d.group,
+          year: d.start_year,
+          imagelink: "https://iftechpublicassets.s3.us-west-2.amazonaws.com/technologylogos/javascript-logo-number-angularjs-node-javascript-logo-11563241338go76tq0nxz.png",
+          x: Math.random() * window.innerWidth,
+          y: Math.random() * window.innerHeight,
+        };
+      });
+
+      myNodes.sort(function (a, b) {
+        return b.value - a.value;
+      });
+      console.log(myNodes);
+      return myNodes;
+    }, 
 
     draw(){
         const forceStrength = 0.03;
-        d3.selectAll("svg").remove()
+        d3.selectAll("datavizualization").remove()
         this.svg = d3
-      .select("#vis")
+      .select("#datavis")
       .append("svg")
+      .classed("datavisualization", true)
       .attr("width", window.innerWidth)
       .attr("height", window.innerHeight);
 
       if (this.islandscape) {
-      this.drawLandscape();
+    //   this.drawLandscape();
     } else {
-      this.drawPortrait();
+    //   this.drawPortrait();
     }
 
               //generate bubbles from the list of data nodes
@@ -195,78 +211,6 @@ export default {
         this.alignVerticalCenter();
     }
     },
-    alignVerticalCenter(){
-        const forceStrength = .04;
-    // Reset the 'x' force to draw the bubbles to the center.
-    this.simulation.force("x", d3.forceX().strength(forceStrength).x(this.width/2));
-    this.simulation.force("y", d3.forceY().strength(0.015).y(this.height/2));
-    //We can reset the alpha value and restart the simulation
-    this.simulation.alpha(1).restart();
-    },
-
-    alignHorizontalCenter(){
-        const forceStrength = .03;
-    // Reset the 'x' force to draw the bubbles to the center.
-    this.simulation.force("y", d3.forceY().strength(forceStrength).y(this.height/2));
-    this.simulation.force("x", d3.forceX().strength(0.01).x(this.width/2))
-    //We can reset the alpha value and restart the simulation
-    this.simulation.alpha(1).restart();
-    },
-
-    //This method takes in a dataset which has been retrieved and then modifies and appends that data for prep to be used as nodes in a d3 graph
-    processDataIntoNodes(data) {
-      // Use the max size_score in the data as the max in the scale's domain
-      // note we have to ensure the size_score is a number.
-      const maxAmount = 100;
-
-      // Size bubbles based on area.
-      const radiusScale = d3
-        .scalePow()
-        .exponent(0.5)
-        .range([2, 40])
-        .domain([0, maxAmount]);
-
-      // Use map() to convert raw data into node data.
-      var myNodes = data.map(function (d) {
-        return {
-          id: d.id,
-          radius: radiusScale(+d.size_score),
-          value: +d.size_score,
-          name: d.tool_name,
-          group: d.group,
-          year: d.start_year,
-          imagelink: "https://iftechpublicassets.s3.us-west-2.amazonaws.com/technologylogos/javascript-logo-number-angularjs-node-javascript-logo-11563241338go76tq0nxz.png",
-          x: Math.random() * window.innerWidth,
-          y: Math.random() * window.innerHeight,
-        };
-      });
-
-      myNodes.sort(function (a, b) {
-        return b.value - a.value;
-      });
-      console.log(myNodes);
-      return myNodes;
-    },
-
-    drawPortrait() {
-     d3.selectAll(".forceMarker").remove()
-      this.svg;
-      var circle = this.svg
-      .append("g")
-        .selectAll("circle")
-        .data([32, 57, 112, 293, 32, 57, 112, 293, 25]);
-
-      var circleEnter = circle.enter().append("circle");
-
-      circleEnter.attr("cy", function (d, i) {
-        return (window.innerHeight / 9) * i + 25;
-      });
-      circleEnter.attr("cx", "50%");
-      circleEnter.attr("r", 5);
-      circleEnter.classed("forceMarker", true);
-
-      
-    },
     drawLandscape() {
     d3.selectAll(".forceMarker").remove()
    
@@ -285,10 +229,47 @@ export default {
       circleEnter.classed("forceMarker", true);
 
       
+    },  
+    alignHorizontalCenter(){
+        const forceStrength = .03;
+    // Reset the 'x' force to draw the bubbles to the center.
+    this.simulation.force("y", d3.forceY().strength(forceStrength).y(this.height/2));
+    this.simulation.force("x", d3.forceX().strength(0.01).x(this.width/2))
+    //We can reset the alpha value and restart the simulation
+    this.simulation.alpha(1).restart();
     },
-  },
+    drawPortrait() {
+     d3.selectAll(".forceMarker").remove()
+      this.svg;
+      var circle = this.svg
+      .append("g")
+        .selectAll("circle")
+        .data([32, 57, 112, 293, 32, 57, 112, 293, 25]);
+
+      var circleEnter = circle.enter().append("circle");
+
+      circleEnter.attr("cy", function (d, i) {
+        return (window.innerHeight / 9) * i + 25;
+      });
+      circleEnter.attr("cx", "50%");
+      circleEnter.attr("r", 5);
+      circleEnter.classed("forceMarker", true);
+
+      
+    },    alignVerticalCenter(){
+        const forceStrength = .04;
+    // Reset the 'x' force to draw the bubbles to the center.
+    this.simulation.force("x", d3.forceX().strength(forceStrength).x(this.width/2));
+    this.simulation.force("y", d3.forceY().strength(0.015).y(this.height/2));
+    //We can reset the alpha value and restart the simulation
+    this.simulation.alpha(1).restart();
+    },
+
+
+    },
 };
 </script>
 
 <style lang="scss" scoped>
+
 </style>
