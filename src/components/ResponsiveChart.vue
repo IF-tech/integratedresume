@@ -1,14 +1,8 @@
 <template>
   <div id="chartbounds">
     <div id="toolbar">
-      <!-- <a href="#" id="all" class="button active">All</a>
-      <a href="#" id="year" class="button">Timeline</a>
-      <a href="#" id="domain" class="button">Domain</a> -->
-      <v-btn @click="this.alignHorizontalCenter" color="success"
-        >Align Horizontal</v-btn
-      >
       <v-btn @click="this.groupBubblesOnCenter" color="success"
-        >Align Center</v-btn
+        >All</v-btn
       >
       <v-btn @click="this.groupBubblesByYear" color="success">Timeline</v-btn>
       <v-btn @click="this.groupBubblesByDomain" color="success">Domain</v-btn>
@@ -279,18 +273,18 @@ export default {
       const height = window.innerHeight;
 if(this.islandscape){
       const yearCenters = {
-        2012: { x: 300, y: height / 2 },
-        2013: { x: width / 2.8 - 300, y: height / 2 },
-        2014: { x: width / 2.6 - 300, y: height / 2 },
-        2015: { x: width / 2.4 - 300, y: height / 2 },
-        2016: { x: width / 2.2 - 300, y: height / 2 },
+        2012: { x: 200, y: height / 2 },
+        2013: { x: width / 2.8 - 100, y: height / 2 },
+        2014: { x: width / 2.6 - 100, y: height / 2 },
+        2015: { x: width / 2.4 - 100, y: height / 2 },
+        2016: { x: width / 2.2 - 100, y: height / 2 },
         2017: { x: width / 2, y: height / 2 },
-        2018: { x: width / 1.8 - 300, y: height / 2 },
-        2019: { x: width / 1.7 - 300, y: height / 2 },
-        2020: { x: width / 1.6 - 300 / 2 },
-        2021: { x: width / 1.4 - 300 / 2 },
-        2022: { x: width / 1.2 - 300, y: height / 2 },
-        2023: { x: width / 1.1 - 300, y: height / 2 },
+        2018: { x: width / 1.8 - 100, y: height / 2 },
+        2019: { x: width / 1.7 - 100, y: height / 2 },
+        2020: { x: width / 1.6 - 100 / 2 },
+        2021: { x: width / 1.4 - 100 / 2 },
+        2022: { x: width / 1.2 - 100, y: height / 2 },
+        2023: { x: width / 1.1-100, y: height / 2 },
       };
       function nodeYearPos(d) {
         return yearCenters[d.year].x;
