@@ -7,13 +7,13 @@
         @click="shrinkObject()"
       >
      
-        <v-icon style="padding-left:15px" dark>
+        <v-icon style="padding-left:25px" dark>
         mdi-close
       </v-icon>
          </div>
     </div>
 
-    <v-container id="chartoverlay" style="visibility: hidden">
+    <v-container fluid id="chartoverlay" style="visibility: hidden">
       <responsive-chart></responsive-chart>
     </v-container>
 

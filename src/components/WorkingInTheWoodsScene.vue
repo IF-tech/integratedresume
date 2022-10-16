@@ -5,9 +5,7 @@
       style="
         position: absolute;
         z-index: 5;
-  
-      "
-      ><v-row>
+    " ><v-row>
         <v-col class="d-flex justify-center align-center">
           <expandable-blob></expandable-blob>
         </v-col> </v-row

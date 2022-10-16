@@ -278,7 +278,7 @@ export default {
         d3
           .forceX()
           .strength(0.03)
-          .x(this.width / 2.8)
+          .x(this.width / 2)
       );
       this.simulation.force(
         "y",
