@@ -1,18 +1,18 @@
 <template>
   <div id="chartbounds">
-    <v-container style="padding-left:25%" id="toolbar">
+    <v-container fluid id="toolbar">
       <v-row >
-        <v-col >  <v-btn   fab
+        <v-col  class="d-flex justify-center align-center">  <v-btn   fab
   icon
   outlined @click="this.groupBubblesOnCenter" color="white"
         >All</v-btn
       ></v-col>
-        <v-col> <v-btn fab
+        <v-col class="d-flex justify-center align-center"> <v-btn fab
   icon
   outlined @click="this.groupBubblesByYear" color="white"><v-icon dark>
         mdi-chart-line
       </v-icon></v-btn></v-col>
-        <v-col>      <v-btn fab
+        <v-col class="d-flex justify-center align-center">      <v-btn fab
   icon
   outlined @click="this.groupBubblesByDomain" color="white"> <v-icon dark>
         mdi-layers
@@ -72,13 +72,14 @@ export default {
 
       if (window.innerWidth / window.innerHeight < 1) {
         this.islandscape = false;
-        // this.drawPortrait();
+        this.drawPortrait();
         this.alignVerticalCenter();
       } else {
         this.islandscape = true;
-        // this.drawLandscape();
+        this.drawLandscape();
         this.groupBubblesOnCenter();
       }
+
     });
 
     //load data
@@ -87,6 +88,7 @@ export default {
     d3.json(FILEPATH).then((json) => {
       this.dataset = this.processDataIntoNodes(json);
       this.draw();
+
     });
   },
 
@@ -134,6 +136,12 @@ export default {
         .classed("datavisualization", true)
         .attr("width", window.innerWidth)
         .attr("height", window.innerHeight);
+
+        if (this.islandscape) {
+      this.drawLandscape();
+    } else {
+      this.drawPortrait();
+    }
 
       //generate bubbles from the list of data nodes
       let bubbles = this.svg
@@ -270,14 +278,14 @@ export default {
         d3
           .forceX()
           .strength(0.03)
-          .x(this.width / 2)
+          .x(this.width / 2.8)
       );
       this.simulation.force(
         "y",
         d3
           .forceY()
           .strength(0.03)
-          .y(this.height / 2.5)
+          .y(this.height / 3)
       );
       //We can reset the alpha value and restart the simulation
       this.simulation.alpha(1).restart();
@@ -379,6 +387,46 @@ if(this.islandscape){
       this.simulation.alpha(1).restart();
     }
 
+    },
+
+    //methods for drawing timeline and lables
+    drawLandscape() {
+    d3.selectAll(".forceMarker").remove()
+   
+      var circle = this.svg
+      .append("g")
+        .selectAll("circle")
+        .data([32, 57, 112, 293, 32, 57, 112, 293, 25]);
+
+      var circleEnter = circle.enter().append("circle").attr("fill", "white");
+
+      circleEnter.attr("cy", "75%");
+      circleEnter.attr("cx", function (d, i) {
+        return (window.innerWidth / 9) * i + 75;
+      });
+      circleEnter.attr("r", 5);
+     
+      circleEnter.classed("forceMarker", true);
+
+      
+    },
+    drawPortrait() {
+     d3.selectAll(".forceMarker").remove()
+      var circle = this.svg
+      .append("g")
+        .selectAll("circle")
+        .data([32, 57, 112, 293, 32, 57, 112, 293, 25]);
+
+      var circleEnter = circle.enter().append("circle").attr("fill", "white");
+
+      circleEnter.attr("cy", function (d, i) {
+        return (window.innerHeight / 9) * i + 25;
+      });
+      circleEnter.attr("cx", "10%");
+      circleEnter.attr("r", 5);
+      circleEnter.classed("forceMarker", true);
+
+      
     },
   },
 };

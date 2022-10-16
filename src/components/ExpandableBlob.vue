@@ -6,31 +6,16 @@
         id="closedatawindow"
         @click="shrinkObject()"
       >
-        <span
-          style="
-            position: fixed;
-            z-index: 3;
-
-            top: 0;
-            left: 0;
-            width: 100px;
-            margin-top: 0;
-            padding: 10px;
-          "
-          class="material-symbols-outlined"
-        >
-        <v-icon dark>
+     
+        <v-icon style="padding-left:15px" dark>
         mdi-close
       </v-icon>
-        </span>
-      </div>
+         </div>
     </div>
 
-    <div id="chartoverlay" style="visibility: hidden">
-      <v-container>
-   </v-container>
+    <v-container id="chartoverlay" style="visibility: hidden">
       <responsive-chart></responsive-chart>
-    </div>
+    </v-container>
 
     <svg
       @click="growObject()"
