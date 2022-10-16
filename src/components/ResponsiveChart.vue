@@ -1,12 +1,26 @@
 <template>
   <div id="chartbounds">
-    <div id="toolbar">
-      <v-btn @click="this.groupBubblesOnCenter" color="success"
+    <v-container style="padding-left:25%" id="toolbar">
+      <v-row >
+        <v-col >  <v-btn   fab
+  icon
+  outlined @click="this.groupBubblesOnCenter" color="white"
         >All</v-btn
-      >
-      <v-btn @click="this.groupBubblesByYear" color="success">Timeline</v-btn>
-      <v-btn @click="this.groupBubblesByDomain" color="success">Domain</v-btn>
-    </div>
+      ></v-col>
+        <v-col> <v-btn fab
+  icon
+  outlined @click="this.groupBubblesByYear" color="white"><v-icon dark>
+        mdi-chart-line
+      </v-icon></v-btn></v-col>
+        <v-col>      <v-btn fab
+  icon
+  outlined @click="this.groupBubblesByDomain" color="white"> <v-icon dark>
+        mdi-layers
+      </v-icon></v-btn></v-col>
+      </v-row>
+     
+    </v-container>
+   
     <div id="datavis"></div>
   </div>
 </template>
@@ -244,7 +258,7 @@ export default {
         d3
           .forceY()
           .strength(0.015)
-          .y(this.height / 2)
+          .y(this.height / 2.5)
       );
       //We can reset the alpha value and restart the simulation
       this.simulation.alpha(1).restart();
@@ -263,7 +277,7 @@ export default {
         d3
           .forceY()
           .strength(0.03)
-          .y(this.height / 2)
+          .y(this.height / 2.5)
       );
       //We can reset the alpha value and restart the simulation
       this.simulation.alpha(1).restart();
@@ -299,18 +313,18 @@ if(this.islandscape){
       this.simulation.alpha(1).restart();
     }else{
       const yearCenters = {
-        2012: { y: 200, x: width / 2 },
-        2013: { y: height / 2.8 - 100, x: width / 2 },
-        2014: { y: height / 2.6 - 100, x: width / 2 },
-        2015: { y: height / 2.4 - 100, x: width / 2 },
-        2016: { y: height / 2.2 - 100, x: width / 2 },
-        2017: { y: height / 2, x: width / 2 },
-        2018: { y: height / 1.8 - 100, x: width / 2 },
-        2019: { y: height / 1.7 - 100, x: width / 2 },
-        2020: { y: height / 1.6 - 100, x: width / 2 },
-        2021: { y: height / 1.4 - 100, x: width / 2 },
-        2022: { y: height / 1.2 - 100, x: width / 2 },
-        2023: { y: height / 1.1 - 200, x: width / 2 },
+        2012: { y: (height / 3)-(height/7), x: width / 2 },
+        2013: { y: height / 2.8 - (height/5), x: width / 2 },
+        2014: { y: height / 2.6 - (height/5), x: width / 2 },
+        2015: { y: height / 2.4 - (height/5), x: width / 2 },
+        2016: { y: height / 2.2 - (height/5), x: width / 2 },
+        2017: { y: height / 2, x: width / 2 - (height/5)},
+        2018: { y: height / 1.8 - (height/5), x: width / 2 },
+        2019: { y: height / 1.7 - (height/5), x: width / 2 },
+        2020: { y: height / 1.6 - (height/5), x: width / 2 },
+        2021: { y: height / 1.4 - (height/5), x: width / 2 },
+        2022: { y: height / 1.2 - (height/5), x: width / 2 },
+        2023: { y: height / 1.1 -(height/5), x: width / 2 },
       };
       function nodeYearPos(d) {
         return yearCenters[d.year].y;
@@ -348,9 +362,9 @@ if(this.islandscape){
       this.simulation.alpha(1).restart();
     }else{
       const groupCenters = {
-    "data": {y : height / 3, x: width/ 3},
-    "development": {y : height / 2, x: width/ 2},
-    "design": {y : height-250, x : width/1.5},
+    "data": {y : (height / 3)-(height/10), x: width/ 3},
+    "development": {y : height / 2-(height/10), x: width/ 2},
+    "design": {y : height-(height/2.5), x : width/1.5},
   };
   function nodeDomainPos(d) {
     return groupCenters[d.group].y;
@@ -371,29 +385,5 @@ if(this.islandscape){
 </script>
 
 <style lang="scss" scoped>
-a,
-a:visited,
-a:active {
-  color: #444;
-}
 
-.container {
-  max-width: 900px;
-  margin: auto;
-}
-
-.button {
-  min-width: 130px;
-  padding: 4px 5px;
-  cursor: pointer;
-  text-align: center;
-  font-size: 13px;
-  border: 1px solid #e0e0e0;
-  text-decoration: none;
-}
-
-.button.active {
-  background: #000;
-  color: #fff;
-}
 </style>

@@ -19,7 +19,9 @@
           "
           class="material-symbols-outlined"
         >
-          X
+        <v-icon dark>
+        mdi-close
+      </v-icon>
         </span>
       </div>
     </div>
