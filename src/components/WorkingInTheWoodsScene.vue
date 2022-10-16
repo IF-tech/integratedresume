@@ -14,8 +14,6 @@
         ><v-row justify="center">
           <v-col justify="center">
 
-            
-            <!-- <blob></blob> -->
             <expandable-blob></expandable-blob>
             <!-- <v-color-picker
               v-model="backgroundColor"
