@@ -40,8 +40,4 @@ body {
   overflow: hidden;
 }
 
-
-
-
-
 </style>

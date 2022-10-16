@@ -37,7 +37,6 @@
 <script>
   import * as THREE from "three";
   import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
-  import Blob from '@/components/Blob.vue';
 import ExpandableBlob from './ExpandableBlob.vue';
 
 
@@ -541,7 +540,6 @@ scene.add(points);
     },
 
     components: {
-        Blob,
         ExpandableBlob,
      
     }
