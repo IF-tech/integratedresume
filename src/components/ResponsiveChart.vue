@@ -1,6 +1,6 @@
 <template>
   <div id="chartbounds">
-    <v-container fluid id="toolbar">
+    <v-container style="position:fixed; top:0px" fluid id="toolbar">
       <v-row >
         <v-col  class="d-flex justify-center align-center">  <v-btn   fab
   icon
@@ -103,7 +103,7 @@ export default {
       const radiusScale = d3
         .scalePow()
         .exponent(0.5)
-        .range([2, 40])
+        .range([2, 45])
         .domain([0, maxAmount]);
 
       // Use map() to convert raw data into node data.
@@ -137,6 +137,8 @@ export default {
         .attr("width", window.innerWidth)
         .attr("height", window.innerHeight);
 
+     
+
         if (this.islandscape) {
       this.drawLandscape();
     } else {
@@ -144,11 +146,17 @@ export default {
     }
 
       //generate bubbles from the list of data nodes
-      let bubbles = this.svg
+      let bubbles = this.svg.append("g").classed("bubbles", true)
         .selectAll(".bubble")
         .data(this.dataset, function (d) {
           return d.id;
         });
+
+  //       let texts = this.svg.selectAll(".bubble")
+	// .data(this.dataset)
+	// .enter()
+	// .append("text").attr('dy', function(d){return d.y}).attr('dx', function(d){return d.x})
+  //   .text(d => d.name).attr("fill", "black");
 
       function charge(d) {
         return -Math.pow(d.radius, 2.05) * 0.03;
@@ -209,10 +217,12 @@ export default {
         .attr("opacity", 0.9)
         .attr("fill", function (d) {
           return fillColor(d.group);
-        });
+        })
 
       //Merge the original empty selection and the enter selection
       bubbles = bubbles.merge(bubblesE);
+
+  
 
       // Transition to make bubbles appear
       bubbles
@@ -285,7 +295,7 @@ export default {
         d3
           .forceY()
           .strength(0.03)
-          .y(this.height / 3)
+          .y(this.height / 2.5)
       );
       //We can reset the alpha value and restart the simulation
       this.simulation.alpha(1).restart();
@@ -400,7 +410,7 @@ if(this.islandscape){
 
       var circleEnter = circle.enter().append("circle").attr("fill", "white");
 
-      circleEnter.attr("cy", "75%");
+      circleEnter.attr("cy", "85%");
       circleEnter.attr("cx", function (d, i) {
         return (window.innerWidth / 9) * i + 75;
       });

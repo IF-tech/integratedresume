@@ -7,7 +7,7 @@
         @click="shrinkObject()"
       >
      
-        <v-icon style="padding-left:25px" dark>
+        <v-icon style="padding-left:15px; z-index: 6" dark>
         mdi-close
       </v-icon>
          </div>
