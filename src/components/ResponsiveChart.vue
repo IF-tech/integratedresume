@@ -117,12 +117,18 @@ export default {
       // note we have to ensure the size_score is a number.
       const maxAmount = 100;
 
-      // Size bubbles based on area.
+      let isSmallScreen;
+      let rangeMax;
+
+      if(window.innerWidth || window.innerHeight < 500){rangeMax = 30}else{rangeMax = 45}
+
+
       const radiusScale = d3
         .scalePow()
         .exponent(0.5)
-        .range([2, 45])
+        .range([2, rangeMax])
         .domain([0, maxAmount]);
+      
 
       // Use map() to convert raw data into node data.
       var myNodes = data.map(function (d) {
@@ -480,7 +486,7 @@ export default {
 
       var circleEnter = circle.enter().append("circle").attr("fill", "white");
 
-      circleEnter.attr("cy", "85%");
+      circleEnter.attr("cy", "75%");
       circleEnter.attr("cx", function (d, i) {
         return (window.innerWidth / 9) * i + 75;
       });
@@ -513,7 +519,7 @@ export default {
         .attr("x", function (d, i) {
           return (window.innerWidth / 9) * i + 55;
         })
-        .attr("y", "90%")
+        .attr("y", "80%")
         .classed("labeltext", true);
     },
     drawPortrait() {
@@ -590,7 +596,7 @@ export default {
           .attr("fill", "white")
           .classed("grouplabel", true);
 
-        labelEnter.attr("y", "65%");
+        labelEnter.attr("y", "75%");
         labelEnter.attr("x", function (d) {
           return d.x
         });

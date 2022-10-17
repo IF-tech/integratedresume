@@ -93,8 +93,7 @@ body {
     rgb(65, 255, 239),
     rgb(6, 184, 216)
   );
-  height: 200px;
-  width: 200px;
+  height: 25vh;
   border-radius: 30% 50% 20% 40%;
   animation: transform 5s ease-in-out infinite both alternate,
     movement_one 10s ease-in-out infinite both;
