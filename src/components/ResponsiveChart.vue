@@ -427,14 +427,15 @@ if(this.islandscape){
 
     //methods for drawing timeline and lables
     drawLandscape() {
-    d3.selectAll(".forceMarker").remove()
+    d3.selectAll(".axislabel").remove()
+    d3.selectAll(".labeltext").remove()
    
       var circle = this.svg
       .append("g")
         .selectAll("circle")
         .data([32, 57, 112, 293, 32, 57, 112, 293, 25]);
 
-      var circleEnter = circle.enter().append("circle").attr("fill", "white");
+      var circleEnter = circle.enter().append("circle").attr("fill", "white")
 
       circleEnter.attr("cy", "85%");
       circleEnter.attr("cx", function (d, i) {
@@ -442,12 +443,25 @@ if(this.islandscape){
       });
       circleEnter.attr("r", 5);
      
-      circleEnter.classed("forceMarker", true);
+      circleEnter.classed("axislabel", true);
+
+   
+      var axislabel = this.svg
+      .append("g")
+        .selectAll("text")
+        .data(["2014", "2015", "2016", "2017", "2018", "2020", "2021", "2022", "2023"]);
+
+      var axislabelEnter = axislabel.enter().append("text").text(function (d){return d}).attr("fill", "white").attr("x", function (d, i) {
+        return (window.innerWidth / 9) * i + 55;
+      }).attr("y", "90%").classed("labeltext", true);
+
+
 
       
     },
     drawPortrait() {
-     d3.selectAll(".forceMarker").remove()
+      d3.selectAll(".axislabel").remove()
+      d3.selectAll(".labeltext").remove()
       var circle = this.svg
       .append("g")
         .selectAll("circle")
@@ -456,11 +470,22 @@ if(this.islandscape){
       var circleEnter = circle.enter().append("circle").attr("fill", "white");
 
       circleEnter.attr("cy", function (d, i) {
-        return (window.innerHeight / 9) * i + 25;
+        return (window.innerHeight / 10) * i + 55;
       });
-      circleEnter.attr("cx", "10%");
+      circleEnter.attr("cx", "15%");
       circleEnter.attr("r", 5);
-      circleEnter.classed("forceMarker", true);
+      circleEnter.classed("axislabel", true);
+      var axislabel = this.svg
+      .append("g")
+        .selectAll("text")
+        .data(["2014", "2015", "2016", "2017", "2018", "2020", "2021", "2022", "2023"]);
+
+      var axislabelEnter = axislabel.enter().append("text").text(function (d){return d}).attr("fill", "white").attr("y", function (d, i) {
+        return (window.innerHeight / 10) * i + 80;
+      }).attr("x", "10%").classed("labeltext", true);
+
+
+
 
       
     },
