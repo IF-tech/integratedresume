@@ -56,7 +56,6 @@ export default {
       this.islandscape = true;
     }
 
-    this.centerpoint = { x: this.width / 2, y: this.height / 2 };
 
     //listen for the window to be resized and adjust width and height data variables
     //all behavior related to the resizing of the window is here
@@ -84,7 +83,7 @@ export default {
 
     //load data
     const FILEPATH =
-      "https://iftechpublicassets.s3.us-west-2.amazonaws.com/resumedata.json";
+      "https://iftechpublicassets.s3.us-west-2.amazonaws.com/resumedatawithimages.json";
     d3.json(FILEPATH).then((json) => {
       this.dataset = this.processDataIntoNodes(json);
       this.draw();
@@ -115,8 +114,7 @@ export default {
           name: d.tool_name,
           group: d.group,
           year: d.start_year,
-          imagelink:
-            "https://iftechpublicassets.s3.us-west-2.amazonaws.com/technologylogos/javascript-logo-number-angularjs-node-javascript-logo-11563241338go76tq0nxz.png",
+          imagelink: d.imagelink,
           x: Math.random() * window.innerWidth,
           y: Math.random() * window.innerHeight,
         };
@@ -129,6 +127,12 @@ export default {
     },
 
     draw() {
+      const fillColor = d3
+        .scaleOrdinal()
+        .domain(["development", "data", "design"])
+        .range(["#ffffff", "#d4d4d4", "#a8a8a8"]);
+
+
       d3.selectAll("datavizualization").remove();
       this.svg = d3
         .select("#datavis")
@@ -137,26 +141,57 @@ export default {
         .attr("width", window.innerWidth)
         .attr("height", window.innerHeight);
 
-     
+  
 
-        if (this.islandscape) {
-      this.drawLandscape();
-    } else {
-      this.drawPortrait();
-    }
 
       //generate bubbles from the list of data nodes
-      let bubbles = this.svg.append("g").classed("bubbles", true)
-        .selectAll(".bubble")
+      let bubbles = this.svg
+        .selectAll("g").classed("bubbles", true)
         .data(this.dataset, function (d) {
           return d.id;
         });
 
-  //       let texts = this.svg.selectAll(".bubble")
-	// .data(this.dataset)
-	// .enter()
-	// .append("text").attr('dy', function(d){return d.y}).attr('dx', function(d){return d.x})
-  //   .text(d => d.name).attr("fill", "black");
+      let bubblesEnter = bubbles.enter().append("g").attr('class', 'bubblenode')
+
+     .append("circle")
+        .classed("bubble", true)
+        .attr("r", 0)
+        .attr("opacity", 0.9)
+        .attr("fill", function (d) {
+          return fillColor(d.group);
+        })
+
+     
+
+      bubbles = bubbles.merge(bubblesEnter);
+
+      // let text = d3.selectAll(".bubblenode").append("text").attr("dx",function (d) {
+      //     return d.x;
+      //   }).attr("dy",function (d) {
+      //     return d.y;
+      //   }).text(function(d){return d.name}).style("fill", "black").style("z-index", "7")
+
+        let image = d3.selectAll(".bubblenode").append("image")
+      .attr("xlink:href", function (d) {return d.imagelink})
+      .attr("x", function (d) {
+          return d.x-25;
+        })
+      .attr("y", function (d) {
+          return d.y;})
+      .attr("width", function (d) {
+          return (d.radius);})
+      .attr("height", function (d) {
+          return (d.radius);});
+
+      // Transition to make bubbles appear
+      bubbles
+        .transition()
+        .duration(2000)
+        .attr("r", function (d) {
+          return d.radius;
+        });
+
+      
 
       function charge(d) {
         return -Math.pow(d.radius, 2.05) * 0.03;
@@ -169,6 +204,22 @@ export default {
           })
           .attr("cy", function (d) {
             return d.y;
+          });
+
+          // text
+          // .attr("dx", function (d) {
+          //   return d.x;
+          // })
+          // .attr("dy", function (d) {
+          //   return d.y;
+          // });
+
+          image
+          .attr("x", function (d) {
+            return d.x-(d.radius/2);
+          })
+          .attr("y", function (d) {
+            return d.y-(d.radius/2);
           });
       }
 
@@ -200,37 +251,12 @@ export default {
       //pause simulation before loading nodes
       this.simulation.stop();
 
-      const fillColor = d3
-        .scaleOrdinal()
-        .domain(["development", "data", "design"])
-        .range(["#ffffff", "#d4d4d4", "#a8a8a8"]);
 
       // Create new circle elements each with class `bubble`.
       // There will be one circle.bubble for each object in the nodes array.
       // Initially, their r will be 0 until the tranisition is called to animate them into the scene.
 
-      let bubblesE = bubbles
-        .enter()
-        .append("circle")
-        .classed("bubble", true)
-        .attr("r", 0)
-        .attr("opacity", 0.9)
-        .attr("fill", function (d) {
-          return fillColor(d.group);
-        })
 
-      //Merge the original empty selection and the enter selection
-      bubbles = bubbles.merge(bubblesE);
-
-  
-
-      // Transition to make bubbles appear
-      bubbles
-        .transition()
-        .duration(2000)
-        .attr("r", function (d) {
-          return d.radius;
-        });
 
       // Set the simulation's nodes to our newly created nodes array.
       this.simulation.nodes(this.dataset);
