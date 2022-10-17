@@ -97,7 +97,7 @@ export default {
           this.drawLandscape();
         }
 
-        this.groupBubblesOnCenter();
+        this.alignHorizontalCenter();
       }
     });
 
@@ -117,10 +117,10 @@ export default {
       // note we have to ensure the size_score is a number.
       const maxAmount = 100;
 
-      let isSmallScreen;
+
       let rangeMax;
 
-      if(window.innerWidth || window.innerHeight < 500){rangeMax = 30}else{rangeMax = 45}
+      if(window.innerWidth < 500 || window.innerHeight < 500){rangeMax = 36}else{rangeMax = 50}
 
 
       const radiusScale = d3
@@ -288,7 +288,7 @@ export default {
 
       // Set initial layout to group based on window layout.
       if (this.islandscape) {
-        this.groupBubblesOnCenter();
+        this.alignHorizontalCenter();
       } else {
         this.alignVerticalCenter();
       }
@@ -596,7 +596,7 @@ export default {
           .attr("fill", "white")
           .classed("grouplabel", true);
 
-        labelEnter.attr("y", "75%");
+        labelEnter.attr("y", "90%");
         labelEnter.attr("x", function (d) {
           return d.x
         });

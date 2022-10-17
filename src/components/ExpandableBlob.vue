@@ -101,6 +101,7 @@ body {
   position: absolute;
   left: 45vw;
   top: 50px;
+  z-index: 3;
 }
 
 @keyframes transform {
