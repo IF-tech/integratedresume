@@ -20,7 +20,6 @@
       </v-row>
      
     </v-container>
-   
     <div id="datavis"></div>
   </div>
 </template>
@@ -32,6 +31,8 @@ export default {
 
   data() {
     return {
+      domainGroupsAreActive: false,
+      timelinesAreActive: false,
       simulation: null,
       islandscape: null,
       svg: null,
@@ -71,11 +72,17 @@ export default {
 
       if (window.innerWidth / window.innerHeight < 1) {
         this.islandscape = false;
-        this.drawPortrait();
+        if(this.timelinesAreActive)
+        {this.drawPortrait();}
         this.alignVerticalCenter();
       } else {
         this.islandscape = true;
-        this.drawLandscape();
+
+        if(this.timelinesAreActive)
+        {this.drawLandscape();}
+
+
+
         this.groupBubblesOnCenter();
       }
 
@@ -270,6 +277,10 @@ export default {
     },
     //below are methods which redraw forces on the graph for different "views"
     alignHorizontalCenter() {
+      d3.selectAll(".axislabel").remove()
+    d3.selectAll(".labeltext").remove()
+    d3.selectAll(".grouplabel").remove()
+      this.timelinesAreActive = false;
       // Reset the 'x' force to draw the bubbles to the center.
       this.simulation.force(
         "y",
@@ -289,6 +300,10 @@ export default {
       this.simulation.alpha(1).restart();
     },
     alignVerticalCenter() {
+      this.timelinesAreActive = false;
+      d3.selectAll(".axislabel").remove()
+    d3.selectAll(".labeltext").remove()
+    d3.selectAll(".grouplabel").remove()
       // Reset the 'x' force to draw the bubbles to the center.
       this.simulation.force(
         "x",
@@ -302,12 +317,17 @@ export default {
         d3
           .forceY()
           .strength(0.015)
-          .y(this.height / 2.5)
+          .y(this.height / 2)
       );
       //We can reset the alpha value and restart the simulation
       this.simulation.alpha(1).restart();
     },
     groupBubblesOnCenter() {
+      this.timelinesAreActive = false;
+      d3.selectAll(".axislabel").remove()
+    d3.selectAll(".labeltext").remove()
+    d3.selectAll(".grouplabel").remove()
+    
       // Reset the 'x' force to draw the bubbles to the center.
       this.simulation.force(
         "x",
@@ -327,6 +347,13 @@ export default {
       this.simulation.alpha(1).restart();
     },
     groupBubblesByYear() {
+      this.timelinesAreActive = true;
+
+     if(this.islandscape){
+      this.drawLandscape()
+     }else{this.drawPortrait()}
+
+
       const width = window.innerWidth;
       const height = window.innerHeight;
 if(this.islandscape){
@@ -385,6 +412,10 @@ if(this.islandscape){
 
     },
     groupBubblesByDomain() {
+      d3.selectAll(".axislabel").remove()
+    d3.selectAll(".labeltext").remove()
+
+    this.drawGroupLables();
       const width = window.innerWidth;
       const height = window.innerHeight;
 if(this.islandscape){
@@ -489,6 +520,46 @@ if(this.islandscape){
 
       
     },
+    drawGroupLables(){
+      this.domainGroupsAreActive = true
+      d3.selectAll(".axislabel").remove()
+      d3.selectAll(".labeltext").remove()
+      d3.selectAll(".grouplabel").remove()
+
+      if(this.islandscape){
+
+      var label = this.svg
+      .append("g")
+        .selectAll("label")
+        .data(["DATA", "DEVELOPMENT", "DESIGN"]);
+      
+      var labelEnter = label.enter().append("text").text(function (d){ return d}).attr("fill", "white").classed("grouplabel", true)
+
+      labelEnter.attr("y", "65%");
+      labelEnter.attr("x", function (d, i) {
+        return (window.innerWidth / 3) * i +150;
+      })
+  
+    }else{
+
+      var label = this.svg
+      .append("g")
+        .selectAll("label")
+        .data(["DATA", "DEV", "DESIGN"]);
+      
+      var labelEnter = label.enter().append("text").text(function (d){ return d}).attr("fill", "white").classed("grouplabel", true)
+
+      labelEnter.attr("x", "10%");
+      labelEnter.attr("y", function (d, i) {
+        return (window.innerHeight / 3) * i +150;
+      })
+  
+
+
+      
+    }
+
+    }
   },
 };
 </script>
